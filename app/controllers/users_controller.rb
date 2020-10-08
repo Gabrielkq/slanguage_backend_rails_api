@@ -1,4 +1,3 @@
-
 class UsersController < ApplicationController
 
     def index
@@ -27,11 +26,11 @@ class UsersController < ApplicationController
         end
     end
 
-private
+  private
 
-def user_params
-    params.permit(:name, :password)
-end
+    def user_params
+     params.permit(:name, :password)
+    end
 
 
 end
