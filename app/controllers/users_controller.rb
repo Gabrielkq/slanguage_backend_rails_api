@@ -8,19 +8,20 @@ class UsersController < ApplicationController
     def show
         user_id = params[:id]
         #{id: params[:id]}
-        if current_user_id == user_id.to_i
+        if session_user == user_id.to_i
         #user_id[:id]
         user = User.find_by(user_id)
         render json: user
         else
-        render json: { go_away: "token doesn't match user"}
+        render json: { errors: "token doesn't match user"}
         end
     end
 
     def create
         user = User.create(user_params)
         if user.valid?
-            render json: { token: token(user.id), user_id: user.id }
+            token = encode_token(user.id)
+            render json: { token: token, user_id: user.id }
         else
             render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
         end

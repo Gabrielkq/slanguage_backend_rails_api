@@ -2,11 +2,11 @@ class ApplicationController < ActionController::API
 
     private
     
-    def hmac_secret
-     ENV["HMAC_SECRET"]
-    end
+         def hmac_secret
+               ENV["HMAC_SECRET"]
+        end
 
-        def token(user_id)
+        def encode_token(user_id)
             payload = { user_id: user_id }
             JWT.encode(payload, hmac_secret, 'HS256')
         end
@@ -15,7 +15,7 @@ class ApplicationController < ActionController::API
          !!current_user_id
         end
     
-        def current_user_id
+        def decoded_token
             begin
                 token = request.headers['Authorization']
                 decoded_array = JWT.decode(token, hmac_secret, true, { algorithm: 'HS256' })
@@ -27,5 +27,9 @@ class ApplicationController < ActionController::API
              payload["user_id"]
         end
     
+        def session_user
+            user = User.find_by(id: decoded_token)
+        end
+
     end
     
